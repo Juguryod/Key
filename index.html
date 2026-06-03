@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¡Tu Clave Especial!</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@900&family=Poppins:wght@400;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #b8860b 0%, #ffd700 25%, #daa520 50%, #ffd700 75%, #b8860b 100%);
+    background-size: 400% 400%;
+    animation: shimmerBg 6s ease infinite;
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 20px;
+    position: relative;
+  }
+
+  @keyframes shimmerBg {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* Floating emojis background */
+  .emoji-float {
+    position: fixed;
+    font-size: 2.5rem;
+    animation: floatUp linear infinite;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.7;
+    user-select: none;
+  }
+
+  @keyframes floatUp {
+    0%   { transform: translateY(110vh) rotate(0deg) scale(1); opacity: 0; }
+    10%  { opacity: 0.7; }
+    90%  { opacity: 0.7; }
+    100% { transform: translateY(-10vh) rotate(360deg) scale(1.2); opacity: 0; }
+  }
+
+  /* Main card */
+  .card {
+    position: relative;
+    z-index: 10;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(12px);
+    border: 3px solid rgba(255,255,255,0.5);
+    border-radius: 30px;
+    padding: 50px 40px 40px;
+    max-width: 600px;
+    width: 100%;
+    text-align: center;
+    box-shadow:
+      0 20px 60px rgba(0,0,0,0.3),
+      inset 0 1px 0 rgba(255,255,255,0.6);
+  }
+
+  .top-emojis {
+    font-size: 5rem;
+    line-height: 1;
+    margin-bottom: 10px;
+    display: block;
+    animation: bounceEmoji 1s ease-in-out infinite alternate;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+  }
+
+  @keyframes bounceEmoji {
+    0%   { transform: scale(1) translateY(0); }
+    100% { transform: scale(1.12) translateY(-10px); }
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    color: #fff;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    margin-bottom: 30px;
+    letter-spacing: 0.5px;
+  }
+
+  .code-box {
+    background: rgba(0,0,0,0.35);
+    border: 2px solid rgba(255,255,255,0.4);
+    border-radius: 18px;
+    padding: 20px 30px;
+    margin-bottom: 25px;
+  }
+
+  .code-label {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.7);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+  }
+
+  .code-text {
+    font-family: 'Courier New', monospace;
+    font-size: clamp(1.5rem, 5vw, 2.2rem);
+    font-weight: 900;
+    color: #ffd700;
+    letter-spacing: 4px;
+    text-shadow: 0 0 20px rgba(255,215,0,0.6), 0 2px 4px rgba(0,0,0,0.5);
+    word-break: break-all;
+  }
+
+  .copy-btn {
+    background: linear-gradient(135deg, #fff700, #ff9900, #ff6600);
+    border: none;
+    border-radius: 50px;
+    padding: 18px 50px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1a0a00;
+    cursor: pointer;
+    letter-spacing: 1px;
+    box-shadow: 0 6px 24px rgba(255,150,0,0.5), 0 2px 0 rgba(0,0,0,0.2);
+    transition: transform 0.15s, box-shadow 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .copy-btn:hover {
+    transform: translateY(-3px) scale(1.04);
+    box-shadow: 0 12px 30px rgba(255,150,0,0.6);
+  }
+
+  .copy-btn:active {
+    transform: translateY(1px) scale(0.97);
+  }
+
+  .copy-btn::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 50%;
+    height: 200%;
+    background: rgba(255,255,255,0.3);
+    transform: skewX(-20deg);
+    animation: btnShine 3s ease infinite;
+  }
+
+  @keyframes btnShine {
+    0%   { left: -60%; }
+    40%  { left: 120%; }
+    100% { left: 120%; }
+  }
+
+  /* Success overlay */
+  .success-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+    animation: fadeInOverlay 0.3s ease;
+  }
+
+  .success-overlay.show {
+    display: flex;
+  }
+
+  @keyframes fadeInOverlay {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .success-card {
+    background: linear-gradient(135deg, #1a0a00, #3d1f00);
+    border: 3px solid #ffd700;
+    border-radius: 24px;
+    padding: 50px 40px;
+    text-align: center;
+    max-width: 420px;
+    width: 90%;
+    box-shadow: 0 0 60px rgba(255,215,0,0.5);
+    animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes popIn {
+    from { transform: scale(0.4) rotate(-5deg); opacity: 0; }
+    to   { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+
+  .success-emoji {
+    font-size: 5rem;
+    display: block;
+    margin-bottom: 15px;
+    animation: spinPop 0.6s ease;
+  }
+
+  @keyframes spinPop {
+    0%   { transform: scale(0) rotate(-180deg); }
+    100% { transform: scale(1) rotate(0deg); }
+  }
+
+  .success-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: #ffd700;
+    text-shadow: 0 0 20px rgba(255,215,0,0.6);
+    margin-bottom: 12px;
+  }
+
+  .success-msg {
+    color: rgba(255,255,255,0.9);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .success-msg strong {
+    color: #ffd700;
+    font-size: 1.1rem;
+  }
+
+  .close-btn {
+    margin-top: 25px;
+    background: #ffd700;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 36px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: #1a0a00;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+
+  .close-btn:hover { transform: scale(1.06); }
+
+  /* Confetti */
+  .confetti-piece {
+    position: fixed;
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 2000;
+    animation: confettiFall linear forwards;
+  }
+
+  @keyframes confettiFall {
+    0%   { transform: translateY(-20px) rotateZ(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotateZ(720deg); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Floating background emojis -->
+<div id="bgEmojis"></div>
+
+<!-- Main card -->
+<div class="card">
+  <span class="top-emojis">🎊🎉</span>
+  <h1>¡Aquí está tu clave exclusiva!</h1>
+
+  <div class="code-box">
+    <div class="code-label">Tu Clave</div>
+    <div class="code-text" id="codeText">272728wijwhwalqp22ow</div>
+  </div>
+
+  <button class="copy-btn" id="copyBtn" onclick="copiarClave()">
+    📋 Copiar Clave
+  </button>
+</div>
+
+<!-- Success overlay -->
+<div class="success-overlay" id="successOverlay" onclick="cerrarOverlay(event)">
+  <div class="success-card">
+    <span class="success-emoji">🎊</span>
+    <div class="success-title">¡Copiado!</div>
+    <p class="success-msg">
+      ¡Felicidades! 🥳<br><br>
+      Has tenido la clave por <strong>2 semanas</strong>.<br>
+      ¡Úsala con responsavilidad! 💛✨
+      ATT :JUAN TXT
+   
+    </p>
+    <button class="close-btn" onclick="cerrarOverlay()">¡OK!</button>
+  </div>
+</div>
+
+<script>
+  // ── Floating background emojis ──────────────────────────
+  const emojis = ['🎁','🎊','🎉','🎁','🎊','🎉','⭐','✨','🌟','💛'];
+  const container = document.getElementById('bgEmojis');
+
+  for (let i = 0; i < 30; i++) {
+    const el = document.createElement('span');
+    el.className = 'emoji-float';
+    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.fontSize = (1.5 + Math.random() * 2) + 'rem';
+    const dur = 6 + Math.random() * 10;
+    const delay = -(Math.random() * dur);
+    el.style.animationDuration = dur + 's';
+    el.style.animationDelay = delay + 's';
+    container.appendChild(el);
+  }
+
+  // ── Copy function ────────────────────────────────────────
+  function copiarClave() {
+    const texto = document.getElementById('codeText').textContent.trim();
+    navigator.clipboard.writeText(texto).catch(() => {
+      // fallback
+      const ta = document.createElement('textarea');
+      ta.value = texto;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    });
+
+    lanzarConfeti();
+    setTimeout(() => {
+      document.getElementById('successOverlay').classList.add('show');
+    }, 200);
+  }
+
+  // ── Confetti ─────────────────────────────────────────────
+  const confettiColors = ['#ffd700','#ff6b6b','#4ecdc4','#45b7d1','#f9ca24','#f0932b','#eb4d4b','#6ab04c','#e056fd','#fff'];
+
+  function lanzarConfeti() {
+    for (let i = 0; i < 120; i++) {
+      setTimeout(() => {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = Math.random() * 100 + 'vw';
+        piece.style.background = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+        piece.style.width  = (8 + Math.random() * 12) + 'px';
+        piece.style.height = (8 + Math.random() * 12) + 'px';
+        piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        const dur = 1.5 + Math.random() * 2;
+        piece.style.animationDuration = dur + 's';
+        piece.style.animationDelay = '0s';
+        document.body.appendChild(piece);
+        setTimeout(() => piece.remove(), dur * 1000 + 100);
+      }, i * 18);
+    }
+  }
+
+  // ── Close overlay ────────────────────────────────────────
+  function cerrarOverlay(e) {
+    if (!e || e.target === document.getElementById('successOverlay') || e.target.classList.contains('close-btn')) {
+      document.getElementById('successOverlay').classList.remove('show');
+    }
+  }
+</script>
+</body>
+</html>
